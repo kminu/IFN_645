@@ -14,17 +14,17 @@ from sklearn.tree import export_graphviz
 def data_prep():
     df = pd.read_csv('CaseStudy1-data/CaseStudyData.csv')
     
-    # find the missing data for all features
+   # find the missing data for all features
     MissingData = df.isnull().sum()
-    print(MissingData.sort_values(ascending = False))
 
 
     # there are 16 columns that are uniformly has missing data
     # drop the missing values of subset columns total 44 instances
-    print('\n\n ********************Dropping the missing data***************************')
+    
     df=df.dropna(subset=['PRIMEUNIT', 'AUCGUART','VehYear','Make','Color','Transmission','WheelTypeID','WarrantyCost', \
                    'VehOdo','Nationality','Size','TopThreeAmericanName','IsOnlineSale','VehBCost','VNST','Auction'])
-    
+    df.info()
+
     ## VehYear ##
     df['VehYear'] = pd.Categorical(df['VehYear'])
     
@@ -159,5 +159,31 @@ def data_prep():
     df['ForSale'] = df['ForSale'].replace('YES', 'Yes')
     df['ForSale'] = df['ForSale'].replace('?', 'Yes')
     df['ForSale'] = df['ForSale'].replace('0', 'No')
+    
+    # correcting nominal variable for 'Transmission' to encode as binary
+    trans_map = {'AUTO':0, 'MANUAL':1}
+    df['Transmission'] = df['Transmission'].map(trans_map)
+    
+    # Correcting categorical variable by using one hot encoding
+    df = pd.concat([df,pd.get_dummies(df['Auction'], prefix='Auction', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['VehYear'], prefix='VehYear', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['Make'], prefix='Make', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['Color'], prefix='Color', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['WheelType'], prefix='WheelType', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['Nationality'], prefix='Nationality', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['Size'], prefix='Size', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['TopThreeAmericanName'], prefix='TopThreeAmericanName', prefix_sep='_', columns= (''))], axis=1)
+    df = pd.concat([df,pd.get_dummies(df['VNST'], prefix='VNST', prefix_sep='_', columns= (''))], axis=1)
 
+    # drop the original columns after one hot encoding
+    df.drop(['Auction'],axis=1, inplace=True)
+    df.drop(['VehYear'],axis=1, inplace=True)
+    df.drop(['Make'],axis=1, inplace=True)
+    df.drop(['Color'],axis=1, inplace=True)
+    df.drop(['WheelType'],axis=1, inplace=True)
+    df.drop(['Nationality'],axis=1, inplace=True)
+    df.drop(['Size'],axis=1, inplace=True)
+    df.drop(['TopThreeAmericanName'],axis=1, inplace=True)
+    df.drop(['VNST'],axis=1, inplace=True)
+    
     return df

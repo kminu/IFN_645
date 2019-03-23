@@ -207,4 +207,4 @@ def data_prep():
     X = df.drop(['IsBadBuy'], axis = 1)
     
     
-    return df
+    return X, y

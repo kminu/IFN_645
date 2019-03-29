@@ -186,4 +186,18 @@ def data_prep():
     df.drop(['TopThreeAmericanName'],axis=1, inplace=True)
     df.drop(['VNST'],axis=1, inplace=True)
     
-    return df
+    
+    # random segmenting
+    df_0,df_1  = [x for _, x in df.groupby(df['IsBadBuy'] >0)]
+    df_0=df_0.iloc[:5365, :]
+    df=pd.concat([df_0, df_1])
+    
+    
+    # separating the y_label -- prediction set
+    y = df['IsBadBuy']
+
+    # X -features are all column except y
+    X = df.drop(['IsBadBuy'], axis = 1)
+    
+    
+    return X, y

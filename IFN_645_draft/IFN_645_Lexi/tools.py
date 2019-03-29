@@ -160,6 +160,14 @@ def data_prep():
     df['ForSale'] = df['ForSale'].replace('?', 'Yes')
     df['ForSale'] = df['ForSale'].replace('0', 'No')
     
+    # Setting up the dataFrame for Machine learning 
+    # copy the data and exclude some columns(dropcol) unncessary for training
+    dropcol = (['PurchaseID','PurchaseTimestamp', 'PurchaseDate' ,'WheelTypeID', 'PRIMEUNIT', \
+            'AUCGUART', 'IsOnlineSale', 'ForSale'])
+    df= df.drop(dropcol,  axis = 1)
+    #df1.head()
+    
+    
     # correcting nominal variable for 'Transmission' to encode as binary
     trans_map = {'AUTO':0, 'MANUAL':1}
     df['Transmission'] = df['Transmission'].map(trans_map)
@@ -186,4 +194,17 @@ def data_prep():
     df.drop(['TopThreeAmericanName'],axis=1, inplace=True)
     df.drop(['VNST'],axis=1, inplace=True)
     
-    return df
+    # random segmenting
+    df_0,df_1  = [x for _, x in df.groupby(df['IsBadBuy'] >0)]
+    df_0=df_0.iloc[:5365, :]
+    df=pd.concat([df_0, df_1])
+    
+    
+    # separating the y_label -- prediction set
+    y = df['IsBadBuy']
+
+    # X -features are all column except y
+    X = df.drop(['IsBadBuy'], axis = 1)
+    
+    
+    return X, y

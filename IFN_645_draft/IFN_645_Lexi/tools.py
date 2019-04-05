@@ -23,7 +23,7 @@ def data_prep():
     
     df=df.dropna(subset=['PRIMEUNIT', 'AUCGUART','VehYear','Make','Color','Transmission','WheelTypeID','WarrantyCost', \
                    'VehOdo','Nationality','Size','TopThreeAmericanName','IsOnlineSale','VehBCost','VNST','Auction'])
-    df.info()
+    #df.info()
 
     ## VehYear ##
     df['VehYear'] = pd.Categorical(df['VehYear'])
@@ -172,6 +172,7 @@ def data_prep():
     trans_map = {'AUTO':0, 'MANUAL':1}
     df['Transmission'] = df['Transmission'].map(trans_map)
     
+    df_col = df
     # Correcting categorical variable by using one hot encoding
     df = pd.concat([df,pd.get_dummies(df['Auction'], prefix='Auction', prefix_sep='_', columns= (''))], axis=1)
     df = pd.concat([df,pd.get_dummies(df['VehYear'], prefix='VehYear', prefix_sep='_', columns= (''))], axis=1)
@@ -194,6 +195,7 @@ def data_prep():
     df.drop(['TopThreeAmericanName'],axis=1, inplace=True)
     df.drop(['VNST'],axis=1, inplace=True)
     
+    
     # random segmenting
     df_0,df_1  = [x for _, x in df.groupby(df['IsBadBuy'] >0)]
     df_0=df_0.iloc[:5365, :]
@@ -207,4 +209,4 @@ def data_prep():
     X = df.drop(['IsBadBuy'], axis = 1)
     
     
-    return X, y
+    return X, y, df_col

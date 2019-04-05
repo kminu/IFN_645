@@ -201,10 +201,10 @@ def data_prep():
     
     
     # separating the y_label -- prediction set
-    y = df['IsBadBuy']
+    #y = df['IsBadBuy']
 
     # X -features are all column except y
-    X = df.drop(['IsBadBuy'], axis = 1)
+    #X = df.drop(['IsBadBuy'], axis = 1)
     
     
-    return X, y
+    return df

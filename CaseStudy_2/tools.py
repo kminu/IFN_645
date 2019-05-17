@@ -6,7 +6,7 @@ from sklearn.tree import export_graphviz
 
 def get_data():
     
-    data = pd.read_csv("datasets/CaseStudy2Data/online_shoppers_intention.csv")
+    data = pd.read_csv("datasets/online_shoppers_intention.csv")
     data=data.dropna(subset=['Administrative', 'Administrative_Duration','Informational','Informational_Duration','ProductRelated','ProductRelated_Duration','BounceRates','ExitRates'])
     
     data['VisitorType'] = data['VisitorType'].replace('Other', 'Returning_Visitor')
